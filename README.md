@@ -141,6 +141,30 @@ git remote set-url origin https://github.com/Abhibharti0/Taskvra--Freelacing-App
 git push -u origin main
 ```
 
+## Render Deployment (No render.yaml)
+
+Use these settings in Render Web Service:
+
+- Root Directory: leave empty (repo root)
+- Build Command: `npm install`
+- Start Command: `npm start`
+
+Required environment variables on Render:
+
+- `NODE_ENV=production`
+- `PORT` (Render injects this automatically)
+- `CLIENT_URL` (your frontend URL)
+- `MONGO_URI`
+- `JWT_SECRET`
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+
+Optional (if used):
+
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE`, `SMTP_FROM`
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+- `GROQ_API_KEY`, `GROQ_MODEL`
+
 ## Security Notes
 
 - Do not push `backend/.env` or `frontend/.env`
