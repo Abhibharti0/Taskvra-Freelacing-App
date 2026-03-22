@@ -1,0 +1,53 @@
+What is the use of Event Viewer at Windows Machine?
+*
+event viewer in a windows machine is a built-in tool used to view system, security, and application logs. it helps monitor computer activities, troubleshoot errors, track login events, and diagnose hardware or software problems.
+What do you mean by Windows Deployment Service in a domain based environment of network?
+*
+windows deployment service  is a microsoft server role used in a domain-based network to deploy and install windows operating systems on multiple computers over the network. it allows administrators to remotely install windows using network boot  without needing physical installation media like dvd or usb, making large-scale os deployment faster and easier
+How can we deploy multiple packages as a single installation file a machine?
+*
+you can deploy multiple packages as a single installation file by creating a bundle or package using tools like microsoft deployment toolkit (mdt), system center configuration manager (sccm), or third-party packaging tools (such as wix, advanced installer, or installshield). these tools combine multiple software packages, scripts, and dependencies into one executable or msi file, so when you run the single installer on a machine, it automatically installs all the included applications in one process.
+What do you mean by WSL?
+*
+wsl stand for windows subsystem for linux  is a feature in windows that allows you to run a linux environment directly on a windows machine without using a virtual machine or dual boot. it lets you use linux commands, tools, and applications alongside windows for development and administration tasks.
+What is Nexthink Query Language (NQL)?
+*
+Explain about the NTFS .
+*
+ 
+This is a required question
+Write few troubleshooting steps to resolve Blue Screen Death (BSD) problem at a computer. 
+*
+Write few differences between HDD and SSD.
+*
+hdd means hard disk drive and ssd means solid state drive. hdd uses spinning disks to store data, while ssd uses flash memory. ssd is faster, more durable, and uses less power. hdd is slower but cheaper and usually gives more storage for less cost.
+Explain about encryption used for data security
+*
+encryption is a method used to protect data by converting it into an unreadable form called ciphertext using a mathematical algorithm and a key. only authorized users who have the correct key can decrypt and read the original data. it is widely used to secure sensitive information such as passwords, emails, financial data, and files during storage or transmission, helping prevent unauthorized access and data theft.
+What is EndPoint Management tool?
+*
+
+
+
+
+
+Explain about IPv4 in brief.
+*
+What do you mean by a domain based network?
+*
+What is NAT? Explain its used in the computer network.
+*
+What is the use of DNS in the internet service?
+*
+What is Nexthink Query Language (NQL)?
+*
+Explain about the FAT .
+*
+What do you mean by Desktop Life Cycle?
+*
+Explain about the user data migration form one computer to another computer.
+*
+What is snapshot at a virtual platform?
+*
+Write steps to create a virtual machine at VMware platform.
+*

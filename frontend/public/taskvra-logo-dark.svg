@@ -1,0 +1,44 @@
+<svg width="240" height="64" viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" fill="none">
+
+  <!-- ===== Gradients ===== -->
+  <defs>
+    <linearGradient id="ringBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+
+    <linearGradient id="ringGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Ring -->
+  <circle cx="70" cy="70" r="48" stroke="url(#ringBlue)" stroke-width="10"
+          stroke-dasharray="150 100" stroke-linecap="round"/>
+
+  <circle cx="70" cy="70" r="48" stroke="url(#ringGreen)" stroke-width="10"
+          stroke-dasharray="100 150" stroke-dashoffset="-150"
+          stroke-linecap="round"/>
+
+  <!-- T Letter -->
+  <text x="50" y="88" font-size="56" font-family="Inter, Segoe UI, Arial"
+        font-weight="700" fill="#e2e8f0">T</text>
+
+  <!-- V Arrow -->
+  <path d="M88 60 L105 95 L122 60"
+        stroke="#22c55e" stroke-width="8"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <polygon points="120,58 132,58 126,44" fill="#22c55e"/>
+
+  <!-- Brand Name -->
+  <text x="150" y="82"
+        font-size="48"
+        font-family="Inter, Segoe UI, Arial"
+        font-weight="700"
+        fill="#e2e8f0">
+    Task<tspan fill="#22c55e">vra</tspan>
+  </text>
+
+</svg>

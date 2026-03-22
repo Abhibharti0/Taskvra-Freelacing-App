@@ -1,0 +1,28 @@
+# Dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Environment files and local overrides
+backend/.env
+frontend/.env
+*.env.local
+*.local
+
+# Python virtual environment
+.venv/
+
+# Build output
+frontend/dist/
+frontend/dist-ssr/
+
+# Runtime/generated files
+backend/uploads/
+*.log
+logs/
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
