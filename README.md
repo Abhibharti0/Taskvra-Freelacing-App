@@ -141,36 +141,71 @@ git remote set-url origin https://github.com/Abhibharti0/Taskvra--Freelacing-App
 git push -u origin main
 ```
 
-## Render Deployment (No render.yaml)
-
-Use these settings in Render Web Service:
-
-- Root Directory: leave empty (repo root)
-- Build Command: `npm install`
-- Start Command: `npm start`
-
-Required environment variables on Render:
-
-- `NODE_ENV=production`
-- `PORT` (Render injects this automatically)
-- `CLIENT_URL` (your frontend URL)
-- `MONGO_URI`
-- `JWT_SECRET`
-- `RAZORPAY_KEY_ID`
-- `RAZORPAY_KEY_SECRET`
-
-Optional (if used):
-
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE`, `SMTP_FROM`
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- `GROQ_API_KEY`, `GROQ_MODEL`
-
 ## Security Notes
 
 - Do not push `backend/.env` or `frontend/.env`
 - Do not push API keys, tokens, or private credential files
 - Keep `.venv/` local only
 - Rotate keys immediately if exposed
+
+## Deployment (Render + Vercel)
+
+### Backend on Render
+
+- Root directory: `backend`
+- Build command: `npm install`
+- Start command: `npm start`
+- Required env vars:
+
+```env
+NODE_ENV=production
+PORT=10000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=strong_random_secret
+
+# Vercel frontend URL (single origin)
+CLIENT_URL=https://your-frontend.vercel.app
+
+# Optional: multiple allowed origins (comma-separated)
+# CLIENT_URLS=https://your-frontend.vercel.app,https://www.yourdomain.com
+
+RAZORPAY_KEY_ID=...
+RAZORPAY_KEY_SECRET=...
+RAZORPAY_CURRENCY=INR
+
+SMTP_HOST=...
+SMTP_PORT=587
+SMTP_USER=...
+SMTP_PASS=...
+SMTP_SECURE=false
+SMTP_FROM=no-reply@yourdomain.com
+
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+
+GROQ_API_KEY=...
+GROQ_MODEL=mixtral-8x7b-32768
+```
+
+### Frontend on Vercel
+
+- Root directory: `frontend`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Required env vars:
+
+```env
+VITE_API_URL=https://your-backend.onrender.com/api
+VITE_SOCKET_URL=https://your-backend.onrender.com
+VITE_RAZORPAY_KEY_ID=your_public_razorpay_key
+```
+
+### Cookie/CORS notes
+
+- Production cookie mode is `Secure` + `SameSite=None` for cross-site auth between Vercel and Render.
+- Ensure `CLIENT_URL` exactly matches your Vercel domain.
+- If using custom domain + Vercel preview URLs, add all required origins in `CLIENT_URLS`.
 
 ## Flow Summary
 

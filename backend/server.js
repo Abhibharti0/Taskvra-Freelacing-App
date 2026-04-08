@@ -27,27 +27,38 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+// Required on Render/proxy setups so secure cookies work correctly
+app.set('trust proxy', 1);
+
 // Setup Socket.io
 const io = setupSocket(server);
 app.set('io', io); // Make io accessible in controllers
 
 // Middleware
-// Allow common local frontend ports (5173 default, 5174 fallback) and env-defined client URL
+const normalizeOrigin = (origin) => origin.replace(/\/$/, '');
+
 const allowedOrigins = [
-  process.env.CLIENT_URL || 'http://localhost:5173',
-  'http://localhost:5174'
-];
+  process.env.CLIENT_URL,
+  ...(process.env.CLIENT_URLS || '').split(',')
+]
+  .filter(Boolean)
+  .map((origin) => normalizeOrigin(origin.trim()));
+
+if (allowedOrigins.length === 0) {
+  allowedOrigins.push('http://localhost:5173', 'http://localhost:5174');
+}
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow non-browser requests (no origin) and allowed origins
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(normalizeOrigin(origin))) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 

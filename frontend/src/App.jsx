@@ -19,7 +19,7 @@ import BidList from './components/bids/BidList';
 import MyGigs from './pages/MyGigs';
 import MyBids from './pages/MyBids';
 import Messages from './pages/Messages';
-import About from './pages/About';
+import About from './pages/about';
 import FindFreelance from './pages/FindFreelance';
 import FindWork from './pages/FindWork';
 import Solutions from './pages/Solutions';
@@ -46,7 +46,7 @@ function AppRoutes() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(79,70,229,0.18)_0,_rgba(2,6,23,1)_60%,_rgba(0,0,0,1)_100%)] text-slate-100">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.18)_0,rgba(2,6,23,1)_60%,rgba(0,0,0,1)_100%)] text-slate-100">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* Glow background */}

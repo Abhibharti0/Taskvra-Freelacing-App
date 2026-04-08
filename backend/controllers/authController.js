@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { generateToken, setTokenCookie } = require('../utils/generateToken');
+const { generateToken, setTokenCookie, clearTokenCookie } = require('../utils/generateToken');
 const { sendEmail } = require('../utils/email');
 
 // Helper to generate and send a 6-digit code
@@ -106,10 +106,7 @@ const login = async (req, res, next) => {
 
 /* ================= LOGOUT ================= */
 const logout = (req, res) => {
-  res.cookie('token', '', {
-    httpOnly: true,
-    expires: new Date(0)
-  });
+  clearTokenCookie(res);
 
   res.json({ success: true });
 };
