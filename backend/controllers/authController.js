@@ -43,6 +43,12 @@ const register = async (req, res, next) => {
       password,
       role: role || 'client'
     };
+
+    if (['admin', 'moderator'].includes(userData.role)) {
+      userData.role = 'client';
+    }
+
+    userData.freelancerApprovalStatus = 'approved';
     
     // Add optional fields if provided
     if (bio) userData.bio = String(bio).slice(0, 500);
@@ -69,9 +75,33 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+
+    let user = await User.findOne({ email: normalizedEmail }).select('+password');
+    const bootstrapEmail = String(process.env.ADMIN_BOOTSTRAP_EMAIL || '').trim().toLowerCase();
+    const bootstrapPassword = process.env.ADMIN_BOOTSTRAP_PASSWORD;
+
+    if (!user && normalizedEmail && normalizedEmail === bootstrapEmail && bootstrapPassword) {
+      await User.create({
+        name: process.env.ADMIN_BOOTSTRAP_NAME || 'Admin',
+        email: normalizedEmail,
+        password: bootstrapPassword,
+        role: 'admin',
+        isEmailVerified: true,
+        freelancerApprovalStatus: 'approved',
+        accountStatus: 'active',
+        isBanned: false
+      });
+
+      user = await User.findOne({ email: normalizedEmail }).select('+password');
+    }
+
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    if (user.isBanned || user.accountStatus === 'suspended') {
+      return res.status(403).json({ message: 'Account suspended' });
     }
 
     // If email not verified, send code and require verification step
@@ -88,6 +118,9 @@ const login = async (req, res, next) => {
     const token = generateToken(user._id);
     setTokenCookie(res, token);
 
+    user.lastLoginAt = new Date();
+    await user.save();
+
     res.json({
       success: true,
       user: {
@@ -96,7 +129,10 @@ const login = async (req, res, next) => {
         email: user.email,
         profilePhoto: user.profilePhoto,
         bio: user.bio,
-        role: user.role
+        role: user.role,
+        freelancerApprovalStatus: user.freelancerApprovalStatus,
+        accountStatus: user.accountStatus,
+        isBanned: user.isBanned
       }
     });
   } catch (err) {
@@ -122,6 +158,9 @@ const getMe = async (req, res) => {
       profilePhoto: req.user.profilePhoto,
       bio: req.user.bio,
       role: req.user.role,
+      freelancerApprovalStatus: req.user.freelancerApprovalStatus,
+      accountStatus: req.user.accountStatus,
+      isBanned: req.user.isBanned,
       ratingAvg: req.user.ratingAvg || 0,
       ratingCount: req.user.ratingCount || 0
     }
@@ -178,7 +217,10 @@ module.exports = {
             email: user.email, 
             profilePhoto: user.profilePhoto,
             bio: user.bio,
-            role: user.role
+            role: user.role,
+            freelancerApprovalStatus: user.freelancerApprovalStatus,
+            accountStatus: user.accountStatus,
+            isBanned: user.isBanned
           }
         });
       }
@@ -208,7 +250,10 @@ module.exports = {
           email: user.email, 
           profilePhoto: user.profilePhoto,
           bio: user.bio,
-          role: user.role
+          role: user.role,
+          freelancerApprovalStatus: user.freelancerApprovalStatus,
+          accountStatus: user.accountStatus,
+          isBanned: user.isBanned
         }
       });
     } catch (err) {

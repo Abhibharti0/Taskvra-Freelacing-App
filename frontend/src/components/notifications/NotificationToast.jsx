@@ -100,7 +100,7 @@ export default function NotificationToast({
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 animate-slide-in"
+      className="pointer-events-none fixed inset-x-0 top-2 z-[120] flex justify-center px-4 animate-slide-in"
     >
       <div
         className={`pointer-events-auto flex max-w-md flex-1 items-start gap-3 rounded-2xl border ${bgColor} px-4 py-3 text-xs text-slate-100 ${shadowColor} backdrop-blur-xl`}

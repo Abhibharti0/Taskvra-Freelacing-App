@@ -7,7 +7,8 @@ const getGigs = async (req, res, next) => {
 
     const gigs = await Gig.find({
       title: { $regex: search, $options: 'i' },
-      status: 'open' // Only show open gigs in public listing
+      status: 'open', // Only show open gigs in public listing
+      moderationStatus: 'approved'
     })
       .populate('ownerId', 'name email profilePhoto')
       .sort({ createdAt: -1 });
@@ -43,7 +44,8 @@ const createGig = async (req, res, next) => {
       title,
       description,
       budget,
-      ownerId: req.user._id
+      ownerId: req.user._id,
+      moderationStatus: 'approved'
     });
 
     const populatedGig = await Gig.findById(gig._id)

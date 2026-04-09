@@ -6,6 +6,7 @@ import { getMe } from './features/auth/authSlice';
 // Components
 import Navbar from './components/layout/Navbar';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import AdminRoute from './components/layout/AdminRoute';
 import NotificationToast from './components/notifications/NotificationToast';
 import ChatBotWidget from './components/layout/ChatBotWidget';
 import Footer from './components/layout/Footer';
@@ -24,6 +25,7 @@ import FindFreelance from './pages/FindFreelance';
 import FindWork from './pages/FindWork';
 import Solutions from './pages/Solutions';
 import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
 
 import Landing from './pages/Landing';
 
@@ -65,6 +67,7 @@ function AppRoutes() {
             <Route path="/" element={<Landing />} />
 
             <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<Login mode="admin" />} />
             <Route path="/register" element={<Register />} />
 
             <Route path="/gigs" element={<GigList />} />
@@ -75,6 +78,17 @@ function AppRoutes() {
 
             {/* Public profile page */}
             <Route path="/profile/:userId" element={<Profile />} />
+
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
+              }
+            />
+
+            <Route path="/admin/dashboard" element={<Navigate to="/admin" replace />} />
 
             <Route
               path="/create-gig"
@@ -118,6 +132,15 @@ function AppRoutes() {
                 <ProtectedRoute>
                   <Messages />
                 </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
               }
             />
 

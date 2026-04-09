@@ -74,7 +74,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
       const isAuthRoute =
-        currentPath.startsWith('/login') || currentPath.startsWith('/register');
+        currentPath.startsWith('/login') ||
+        currentPath.startsWith('/register') ||
+        currentPath.startsWith('/admin/login');
       
       const isGetMeCall = error.config?.url === '/auth/me';
 

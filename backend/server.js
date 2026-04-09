@@ -18,11 +18,44 @@ const messageRoutes = require('./routes/messageRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const ratingRoutes = require('./routes/ratingRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const User = require('./models/user');
 
 // Env already loaded above
 
 // Connect to database
 connectDB();
+
+const bootstrapAdminAccount = async () => {
+  const adminEmail = process.env.ADMIN_BOOTSTRAP_EMAIL;
+  const adminPassword = process.env.ADMIN_BOOTSTRAP_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    return;
+  }
+
+  const adminUser = await User.findOne({ email: adminEmail.toLowerCase().trim() });
+  if (adminUser) {
+    adminUser.role = 'admin';
+    adminUser.isEmailVerified = true;
+    adminUser.freelancerApprovalStatus = 'approved';
+    adminUser.accountStatus = 'active';
+    adminUser.isBanned = false;
+    adminUser.password = adminPassword;
+    await adminUser.save();
+    return;
+  }
+
+  await User.create({
+    name: process.env.ADMIN_BOOTSTRAP_NAME || 'Admin',
+    email: adminEmail,
+    password: adminPassword,
+    role: 'admin',
+    isEmailVerified: true,
+    freelancerApprovalStatus: 'approved',
+    accountStatus: 'active'
+  });
+};
 
 const app = express();
 const server = http.createServer(app);
@@ -83,6 +116,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/ratings', ratingRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -103,9 +137,19 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-server.listen(PORT, () => {
-  console.log(` Server running on port ${PORT} in ${NODE_ENV} mode`);
-});
+const startServer = async () => {
+  try {
+    await bootstrapAdminAccount();
+    server.listen(PORT, () => {
+      console.log(` Server running on port ${PORT} in ${NODE_ENV} mode`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 
 // Handle unhandled promise rejections

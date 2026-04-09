@@ -33,8 +33,39 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['client', 'freelancer', 'both'],
+    enum: ['client', 'freelancer', 'both', 'admin', 'moderator'],
     default: 'client'
+  },
+  freelancerApprovalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'approved'
+  },
+  accountStatus: {
+    type: String,
+    enum: ['active', 'suspended'],
+    default: 'active'
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
+  },
+  banReason: {
+    type: String,
+    default: null
+  },
+  bannedAt: {
+    type: Date,
+    default: null
+  },
+  bannedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  lastLoginAt: {
+    type: Date,
+    default: null
   },
   // Rating aggregates for freelancers
   ratingAvg: {
