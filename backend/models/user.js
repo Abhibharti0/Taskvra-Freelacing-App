@@ -20,6 +20,15 @@ const userSchema = new mongoose.Schema({
     trim: true,
     match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
   },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    default: null,
+    validate: {
+      validator: (value) => !value || /^\d{10}$/.test(String(value)),
+      message: 'Phone number must be exactly 10 digits'
+    }
+  },
   password: {
     type: String,
     required: [true, 'Password is required'],

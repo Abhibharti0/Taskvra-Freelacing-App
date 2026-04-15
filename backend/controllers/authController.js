@@ -25,7 +25,7 @@ const issueVerificationCode = async (user) => {
 /* ================= REGISTER ================= */
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role, bio } = req.body;
+    const { name, email, password, role, bio, phoneNumber } = req.body;
 
     if (/\d/.test(String(name || ''))) {
       return res.status(400).json({ message: 'Name cannot contain numbers' });
@@ -33,6 +33,10 @@ const register = async (req, res, next) => {
 
     if (/[A-Z]/.test(String(email || ''))) {
       return res.status(400).json({ message: 'Email cannot contain capital letters' });
+    }
+
+    if (phoneNumber && !/^\d{10}$/.test(String(phoneNumber).trim())) {
+      return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
     }
 
     if (!name || !email || !password) {
@@ -51,6 +55,8 @@ const register = async (req, res, next) => {
       password,
       role: role || 'client'
     };
+
+    if (phoneNumber) userData.phoneNumber = String(phoneNumber).trim();
 
     if (['admin', 'moderator'].includes(userData.role)) {
       userData.role = 'client';
@@ -135,6 +141,7 @@ const login = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phoneNumber: user.phoneNumber,
         profilePhoto: user.profilePhoto,
         bio: user.bio,
         role: user.role,
@@ -163,6 +170,7 @@ const getMe = async (req, res) => {
       id: req.user._id,
       name: req.user.name,
       email: req.user.email,
+        phoneNumber: req.user.phoneNumber,
       profilePhoto: req.user.profilePhoto,
       bio: req.user.bio,
       role: req.user.role,
@@ -223,6 +231,7 @@ module.exports = {
             id: user._id, 
             name: user.name, 
             email: user.email, 
+              phoneNumber: user.phoneNumber,
             profilePhoto: user.profilePhoto,
             bio: user.bio,
             role: user.role,
@@ -256,6 +265,8 @@ module.exports = {
           id: user._id, 
           name: user.name, 
           email: user.email, 
+            phoneNumber: user.phoneNumber,
+          phoneNumber: user.phoneNumber,
           profilePhoto: user.profilePhoto,
           bio: user.bio,
           role: user.role,
