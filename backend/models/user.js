@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Name is required'],
     trim: true,
-    minlength: [2, 'Name must be at least 2 characters']
+    minlength: [2, 'Name must be at least 2 characters'],
+    validate: {
+      validator: (value) => !/\d/.test(value),
+      message: 'Name cannot contain numbers'
+    }
   },
   email: {
     type: String,

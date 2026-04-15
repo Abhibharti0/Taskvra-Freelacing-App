@@ -27,6 +27,14 @@ const register = async (req, res, next) => {
   try {
     const { name, email, password, role, bio } = req.body;
 
+    if (/\d/.test(String(name || ''))) {
+      return res.status(400).json({ message: 'Name cannot contain numbers' });
+    }
+
+    if (/[A-Z]/.test(String(email || ''))) {
+      return res.status(400).json({ message: 'Email cannot contain capital letters' });
+    }
+
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'All fields required' });
     }
@@ -179,7 +187,7 @@ const updateProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       update,
-      { new: true }
+      { new: true, runValidators: true }
     ).select('-password');
 
     res.json({

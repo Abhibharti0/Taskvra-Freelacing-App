@@ -14,6 +14,8 @@ export default function Register() {
   });
   const [code, setCode] = useState('');
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(null);
+  const nameHasNumbers = /\d/.test(formData.name);
+  const emailHasCaps = /[A-Z]/.test(formData.email);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,6 +54,14 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (nameHasNumbers) {
+      return;
+    }
+
+    if (emailHasCaps) {
+      return;
+    }
     
     // Create FormData to handle file upload
     const submitData = new FormData();
@@ -123,8 +133,14 @@ export default function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                pattern="^[^0-9]*$"
+                title="Name cannot contain numbers"
                 className="w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 outline-none ring-0 transition placeholder:text-slate-500 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-500/40"
               />
+              <p className="mt-1 text-xs text-slate-500">Use letters and spaces only</p>
+              {nameHasNumbers && (
+                <p className="text-xs text-red-300">Name cannot contain numbers</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -137,8 +153,16 @@ export default function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                title="Email cannot contain capital letters"
                 className="w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 outline-none ring-0 transition placeholder:text-slate-500 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-500/40"
               />
+              <p className="mt-1 text-xs text-slate-500">Use lowercase letters only</p>
+              {emailHasCaps && (
+                <p className="text-xs text-red-300">Email cannot contain capital letters</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
