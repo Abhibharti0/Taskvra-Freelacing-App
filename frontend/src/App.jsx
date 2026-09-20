@@ -6,6 +6,7 @@ import { getMe } from './features/auth/authSlice';
 // Components
 import Navbar from './components/layout/Navbar';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import AdminRoute from './components/layout/AdminRoute';
 import NotificationToast from './components/notifications/NotificationToast';
 import ChatBotWidget from './components/layout/ChatBotWidget';
 import Footer from './components/layout/Footer';
@@ -19,11 +20,12 @@ import BidList from './components/bids/BidList';
 import MyGigs from './pages/MyGigs';
 import MyBids from './pages/MyBids';
 import Messages from './pages/Messages';
-import About from './pages/About';
+import About from './pages/about';
 import FindFreelance from './pages/FindFreelance';
 import FindWork from './pages/FindWork';
 import Solutions from './pages/Solutions';
 import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
 
 import Landing from './pages/Landing';
 
@@ -46,7 +48,7 @@ function AppRoutes() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(79,70,229,0.18)_0,_rgba(2,6,23,1)_60%,_rgba(0,0,0,1)_100%)] text-slate-100">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,rgba(79,70,229,0.18)_0,rgba(2,6,23,1)_60%,rgba(0,0,0,1)_100%)] text-slate-100">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* Glow background */}
@@ -65,6 +67,7 @@ function AppRoutes() {
             <Route path="/" element={<Landing />} />
 
             <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<Login mode="admin" />} />
             <Route path="/register" element={<Register />} />
 
             <Route path="/gigs" element={<GigList />} />
@@ -75,6 +78,17 @@ function AppRoutes() {
 
             {/* Public profile page */}
             <Route path="/profile/:userId" element={<Profile />} />
+
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
+              }
+            />
+
+            <Route path="/admin/dashboard" element={<Navigate to="/admin" replace />} />
 
             <Route
               path="/create-gig"
@@ -118,6 +132,15 @@ function AppRoutes() {
                 <ProtectedRoute>
                   <Messages />
                 </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPanel />
+                </AdminRoute>
               }
             />
 

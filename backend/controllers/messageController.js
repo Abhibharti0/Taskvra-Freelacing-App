@@ -229,6 +229,13 @@ const getOrCreateConversation = async (req, res, next) => {
       return res.status(400).json({ message: 'Invalid bid' });
     }
 
+    const isClient = bid.gigId.ownerId.toString() === req.user._id.toString();
+    const isFreelancer = bid.freelancerId._id.toString() === req.user._id.toString();
+
+    if (!isClient && !isFreelancer) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
     // Get client info
     const User = require('../models/user');
     const client = await User.findById(bid.gigId.ownerId).select('name');

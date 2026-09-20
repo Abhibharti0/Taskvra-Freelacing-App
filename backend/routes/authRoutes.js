@@ -23,7 +23,7 @@ router.post('/resend-code', resendVerificationCode);
 router.get('/user/:id', getPublicUser);
 
 /* PRIVATE */
-router.post('/logout', protect, logout);
+router.post('/logout', logout);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, upload.single('profilePhoto'), updateProfile);
 

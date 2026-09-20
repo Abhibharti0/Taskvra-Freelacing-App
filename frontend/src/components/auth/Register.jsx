@@ -7,6 +7,7 @@ export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phoneNumber: '',
     password: '',
     role: 'client',
     bio: '',
@@ -14,6 +15,9 @@ export default function Register() {
   });
   const [code, setCode] = useState('');
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(null);
+  const nameHasNumbers = /\d/.test(formData.name);
+  const emailHasCaps = /[A-Z]/.test(formData.email);
+  const phoneIsInvalid = formData.phoneNumber && !/^\d{10}$/.test(formData.phoneNumber);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,7 +38,15 @@ export default function Register() {
   }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === 'phoneNumber') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({ ...formData, phoneNumber: digitsOnly });
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleFileChange = (e) => {
@@ -52,11 +64,24 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (nameHasNumbers) {
+      return;
+    }
+
+    if (emailHasCaps) {
+      return;
+    }
+
+    if (phoneIsInvalid) {
+      return;
+    }
     
     // Create FormData to handle file upload
     const submitData = new FormData();
     submitData.append('name', formData.name);
     submitData.append('email', formData.email);
+    if (formData.phoneNumber) submitData.append('phoneNumber', formData.phoneNumber);
     submitData.append('password', formData.password);
     submitData.append('role', formData.role);
     if (formData.bio) submitData.append('bio', formData.bio);
@@ -123,8 +148,14 @@ export default function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                pattern="^[^0-9]*$"
+                title="Name cannot contain numbers"
                 className="w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 outline-none ring-0 transition placeholder:text-slate-500 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-500/40"
               />
+              <p className="mt-1 text-xs text-slate-500">Use letters and spaces only</p>
+              {nameHasNumbers && (
+                <p className="text-xs text-red-300">Name cannot contain numbers</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -137,8 +168,39 @@ export default function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                title="Email cannot contain capital letters"
                 className="w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 outline-none ring-0 transition placeholder:text-slate-500 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-500/40"
               />
+              <p className="mt-1 text-xs text-slate-500">Use lowercase letters only</p>
+              {emailHasCaps && (
+                <p className="text-xs text-red-300">Email cannot contain capital letters</p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                Phone Number <span className="text-slate-600">(Optional)</span>
+              </label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                inputMode="numeric"
+                autoComplete="tel"
+                maxLength={10}
+                pattern="^[0-9]{10}$"
+                title="Phone number must be exactly 10 digits"
+                placeholder="Enter your phone number"
+                className="w-full rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-2.5 text-sm text-slate-100 outline-none ring-0 transition placeholder:text-slate-500 focus:border-sky-400/70 focus:ring-2 focus:ring-sky-500/40"
+              />
+              <p className="mt-1 text-xs text-slate-500">Digits only, exactly 10 characters</p>
+              {phoneIsInvalid && (
+                <p className="text-xs text-red-300">Phone number must be exactly 10 digits</p>
+              )}
             </div>
 
             <div className="space-y-1.5">

@@ -34,6 +34,13 @@ const protect = async (req, res, next) => {
       });
     }
 
+    if (user.isBanned || user.accountStatus === 'suspended') {
+      return res.status(403).json({
+        success: false,
+        message: 'Account suspended'
+      });
+    }
+
     req.user = user;   // ✅ NOW req.user._id available everywhere
 
     next();

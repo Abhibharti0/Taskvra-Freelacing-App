@@ -1,8 +1,30 @@
+const dns = require('dns');
 const mongoose = require('mongoose');
+
+const mongoUri = process.env.MONGO_URI;
+
+if (mongoUri && mongoUri.startsWith('mongodb+srv://')) {
+  const dnsServers = (process.env.MONGO_DNS_SERVERS || '1.1.1.1,8.8.8.8')
+    .split(',')
+    .map((server) => server.trim())
+    .filter(Boolean);
+
+  if (dnsServers.length > 0) {
+    try {
+      dns.setServers(dnsServers);
+    } catch (error) {
+      console.warn('Could not override DNS servers for MongoDB SRV lookup:', error.message);
+    }
+  }
+}
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    if (!mongoUri) {
+      throw new Error('MONGO_URI is not defined');
+    }
+
+    const conn = await mongoose.connect(mongoUri, {
       // Options for better connection handling
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,

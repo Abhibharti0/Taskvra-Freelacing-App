@@ -36,6 +36,13 @@ const bidSchema = new mongoose.Schema({
     amount: { type: Number, default: null }, // in base currency units
     currency: { type: String, default: null },
     verifiedAt: { type: Date, default: null },
+    escrowStatus: {
+      type: String,
+      enum: ['none', 'held', 'released', 'refunded'],
+      default: 'none'
+    },
+    escrowUpdatedAt: { type: Date, default: null },
+    escrowNote: { type: String, default: null },
     // Split payment fields
     requiresSplit: { type: Boolean, default: false },
     partiallyPaid: { type: Boolean, default: false },

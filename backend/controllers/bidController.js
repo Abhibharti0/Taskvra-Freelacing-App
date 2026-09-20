@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Bid = require('../models/bid');
 const Gig = require('../models/gig');
 const Conversation = require('../models/conversation');
+const PlatformSetting = require('../models/platformSetting');
 const { sendEmail } = require('../utils/email');
 
 // @desc    Submit a bid
@@ -16,6 +17,20 @@ const submitBid = async (req, res, next) => {
       return res.status(403).json({
         success: false,
         message: 'Clients cannot submit bids'
+      });
+    }
+
+    if (req.user.freelancerApprovalStatus === 'pending') {
+      return res.status(403).json({
+        success: false,
+        message: 'Your freelancer profile is pending approval'
+      });
+    }
+
+    if (req.user.freelancerApprovalStatus === 'rejected') {
+      return res.status(403).json({
+        success: false,
+        message: 'Your freelancer profile was rejected'
       });
     }
 
@@ -41,6 +56,49 @@ const submitBid = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: 'This gig is no longer accepting bids'
+      });
+    }
+
+    if (gig.moderationStatus !== 'approved') {
+      return res.status(400).json({
+        success: false,
+        message: 'This gig is not available'
+      });
+    }
+
+    const settings = await PlatformSetting.findOne().lean();
+    const minBidAmount = settings?.minBidAmount || 1;
+    const maxBidsPerGig = settings?.maxBidsPerGig || 50;
+    const maxBidsPerFreelancerPerDay = settings?.maxBidsPerFreelancerPerDay || 20;
+
+    if (Number(price) < minBidAmount) {
+      return res.status(400).json({
+        success: false,
+        message: `Bid price must be at least ${minBidAmount}`
+      });
+    }
+
+    const [gigBidCount, freelancerDailyCount] = await Promise.all([
+      Bid.countDocuments({ gigId, status: { $in: ['pending', 'hired'] } }),
+      Bid.countDocuments({
+        freelancerId: req.user._id,
+        createdAt: {
+          $gte: new Date(new Date().setHours(0, 0, 0, 0))
+        }
+      })
+    ]);
+
+    if (gigBidCount >= maxBidsPerGig) {
+      return res.status(400).json({
+        success: false,
+        message: 'This gig has reached the maximum number of bids'
+      });
+    }
+
+    if (freelancerDailyCount >= maxBidsPerFreelancerPerDay) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have reached your daily bid limit'
       });
     }
 

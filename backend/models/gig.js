@@ -26,6 +26,26 @@ const gigSchema = new mongoose.Schema({
     enum: ['open', 'assigned'],
     default: 'open'
   },
+  moderationStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'approved'
+  },
+  moderationNote: {
+    type: String,
+    default: null,
+    trim: true,
+    maxlength: [500, 'Moderation note cannot exceed 500 characters']
+  },
+  moderatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  moderatedAt: {
+    type: Date,
+    default: null
+  },
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Name is required'],
     trim: true,
-    minlength: [2, 'Name must be at least 2 characters']
+    minlength: [2, 'Name must be at least 2 characters'],
+    validate: {
+      validator: (value) => !/\d/.test(value),
+      message: 'Name cannot contain numbers'
+    }
   },
   email: {
     type: String,
@@ -15,6 +19,15 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
+  },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    default: null,
+    validate: {
+      validator: (value) => !value || /^\d{10}$/.test(String(value)),
+      message: 'Phone number must be exactly 10 digits'
+    }
   },
   password: {
     type: String,
@@ -33,8 +46,39 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['client', 'freelancer', 'both'],
+    enum: ['client', 'freelancer', 'both', 'admin', 'moderator'],
     default: 'client'
+  },
+  freelancerApprovalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'approved'
+  },
+  accountStatus: {
+    type: String,
+    enum: ['active', 'suspended'],
+    default: 'active'
+  },
+  isBanned: {
+    type: Boolean,
+    default: false
+  },
+  banReason: {
+    type: String,
+    default: null
+  },
+  bannedAt: {
+    type: Date,
+    default: null
+  },
+  bannedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  lastLoginAt: {
+    type: Date,
+    default: null
   },
   // Rating aggregates for freelancers
   ratingAvg: {
